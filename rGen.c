@@ -30,7 +30,9 @@ int main(int argc, char* argv[]){
             printf("File does not exist: %s\n", filename);
             return 1;
         }
-        
+        fprintf(fp, "%d\n", randNum);
+        fclose(fp);
+
     }
     return 0;
 }
