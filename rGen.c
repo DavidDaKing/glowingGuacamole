@@ -1,9 +1,20 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 extern int randomNumGen(int seed);
 
 int main(int argc, char* argv[]){
     int randNum;
+
+    char filename[20];
+
+    //not very safe
+    strcpy(filename, "file_"); 
+    printf("Filename is: %s\n", filename);
+
+
+    
 
     for(int i = 0; i < 10; i++){
         randNum = randomNumGen(i);
