@@ -21,7 +21,10 @@ struct num_and_str {
 };
 
 extern void sortLinkedNum();
+extern void sortLinkedStr();
 extern void insertNode(struct num_and_str *node);
+extern void insertNode1(struct num_and_str *node);
+extern int getNumber(char *word);
 
 struct num_and_str *ns_list;
 
@@ -68,6 +71,7 @@ int main(int argc, char* argv[]){
 
     //sorts Linked list ascending based on number
     sortLinkedNum();
+    sortLinkedStr();
     temp = ns_list;
 
     /*
@@ -280,4 +284,90 @@ void insertNode(struct num_and_str *node){
     node->next = NULL;
     iprev->next = node;
     return;
+}
+
+
+void sortLinkedStr(){
+    struct num_and_str *curr, *prev, *temp;
+    char *word;
+    int currNumber, prevNumber;
+
+    if (ns_list == NULL){return;}
+
+    curr = prev = ns_list;
+
+    while(curr != NULL){
+
+        word = getFirstWord(curr->poetry);
+        currNumber = getNumber(word);
+        
+        word = getFirstWord(prev->poetry);
+        prevNumber = getNumber(word);
+
+        //already descending order
+        if(curr->number <= prev->number){
+            prev = curr;
+            curr = curr->next;
+        }
+        //not descending order
+        else{
+            temp = curr;
+            prev->next = curr->next;
+            curr = curr->next;
+            insertNode1(temp);
+        }
+    }
+}
+
+void insertNode1(struct num_and_str *node){
+    struct num_and_str *iprev, *icurr;
+    char *word;
+    int icurrNumber, iprevNumber, nodeNumber;
+
+    if(ns_list == NULL){return;}
+
+    icurr = iprev = ns_list;
+
+    while(icurr != NULL){
+
+        word = getFirstWord(icurr->poetry);
+        icurrNumber = getNumber(word);
+        
+        word = getFirstWord(iprev->poetry);
+        iprevNumber = getNumber(word);
+
+        word = getFirstWord(node->poetry);
+        nodeNumber = getNumber(word);
+
+        if(node->number < icurr->number){
+            iprev = icurr;
+            icurr = icurr->next;
+        }
+        else{
+            //temp must be inserted before curr
+            //temp is <= than curr
+            if (icurr == iprev){
+                //icurr is at the head
+                node->next = icurr;
+                ns_list = node;
+            }else{
+                node->next = icurr;
+                iprev->next = node;
+            }
+            return;
+        }
+    }
+    // new node has to be inserted at the end
+    node->next = NULL;
+    iprev->next = node;
+    return;
+}
+
+int getNumber(char *word){
+    for(int i = 0; i < 10; i++){
+        if(strcmp(word, number_map[i]) == 0){
+            return i++;
+        }
+    }
+    return 0;
 }
