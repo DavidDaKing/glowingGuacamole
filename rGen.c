@@ -12,11 +12,16 @@ extern void strings2List();
 extern char *getPoetry(int s);
 extern char *getFirstWord(char *line);
 
+
+
 struct num_and_str {
     int number;
     char *poetry;
     struct num_and_str *next;
 };
+
+extern void sortLinkedNum();
+extern void insertNode(struct num_and_str *node);
 
 struct num_and_str *ns_list;
 
@@ -31,6 +36,9 @@ int main(int argc, char* argv[]){
     int len;
 
     FILE *fp;
+
+    struct num_and_str *temp; 
+    //temp = ns_list;
 
     //always initilize linked list as null 
     ns_list = NULL;
@@ -58,8 +66,20 @@ int main(int argc, char* argv[]){
     createList();
     strings2List();
 
+    //sorts Linked list ascending based on number
+    sortLinkedNum();
+    temp = ns_list;
+
+    /*
     char *line = NULL;
     printf("Line: %s \n", line);
+    */
+
+    while(temp != NULL){
+        printf("List Number: %d\n", temp->number);
+        temp = temp->next;
+    }
+    
 
     return 0;
 }
@@ -205,4 +225,59 @@ char *getFirstWord(char *line){
 
     word[j] = 0;
     return word;    
+}
+
+void sortLinkedNum(){
+    struct num_and_str *curr, *prev, *temp;
+
+    if (ns_list == NULL){return;}
+
+    curr = prev = ns_list;
+
+    while(curr != NULL){
+        //already ascending order
+        if(curr->number >= prev->number){
+            prev = curr;
+            curr = curr->next;
+        }
+        //not ascending order
+        else{
+            temp = curr;
+            prev->next = curr->next;
+            curr = curr->next;
+            insertNode(temp);
+        }
+    }
+}
+
+void insertNode(struct num_and_str *node){
+    struct num_and_str *iprev, *icurr;
+
+    if(ns_list == NULL){return;}
+
+    icurr = iprev = ns_list;
+
+    while(icurr != NULL){
+        if(node->number > icurr->number){
+            iprev = icurr;
+            icurr = icurr->next;
+        }
+        else{
+            //temp must be inserted before curr
+            //temp is <= than curr
+            if (icurr == iprev){
+                //icurr is at the head
+                node->next = icurr;
+                ns_list = node;
+            }else{
+                node->next = icurr;
+                iprev->next = node;
+            }
+            return;
+        }
+    }
+    // new node has to be inserted at the end
+    node->next = NULL;
+    iprev->next = node;
+    return;
 }
